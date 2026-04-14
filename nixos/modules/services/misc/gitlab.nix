@@ -195,7 +195,13 @@ let
         receive_pack = true;
       };
       workhorse.secret_file = "${cfg.statePath}/.gitlab_workhorse_secret";
-      gitlab_kas.secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+      gitlab_kas = {
+        enabled = cfg.kas.enable;
+        secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+        external_url = "wss://gitlab.internal.axiom.lucasfehres.nl/-/kubernetes-agent";
+        internal_url = "grpc://localhost:8153";
+        external_k8s_proxy_url = "https://gitlab.internal.axiom.lucasfehres.nl/-/kubernetes-agent";
+      };
       git.bin_path = "git";
       monitoring = {
         ip_whitelist = [
