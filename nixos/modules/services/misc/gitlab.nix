@@ -128,8 +128,9 @@ let
     };
     redis = {
       server = {
-        address = cfg.redisUrl;
+        address = "/run/gitlab/redis.sock";
       };
+      network = "unix";
     };
   };
 
