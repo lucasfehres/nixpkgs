@@ -113,7 +113,7 @@ let
       };
     };
     gitlab = {
-      address = "https://gitlab.internal.lucasfehres.nl"; # "http+unix://${pathUrlQuote gitlabSocket}";
+      address = "https://gitlab.internal.axiom.lucasfehres.nl"; # "http+unix://${pathUrlQuote gitlabSocket}";
       authentication_secret_file = "${cfg.statePath}/.gitlab_kas_secret";
     };
     api = {
