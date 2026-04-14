@@ -101,7 +101,7 @@ let
     agent = {
       listen = {
         network = "tcp";
-        address = "127.0.0.1:8150";
+        address = "0.0.0.0:8150";
       };
       kubernetes_api = {
         listen = {
