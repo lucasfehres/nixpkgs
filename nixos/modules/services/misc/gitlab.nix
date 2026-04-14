@@ -97,6 +97,42 @@ let
     log_file = "${cfg.statePath}/log/gitlab-shell.log";
   };
 
+  gitlabKasConfig = yaml.generate "kas.yml" {
+    agent = {
+      listen = {
+        network = "tcp";
+        address = "127.0.0.1:8150";
+      };
+      kubernetes_api = {
+        listen = {
+          network = "tcp";
+          address = "127.0.0.1:8154";
+        };
+        # TODO: is this BAD? probably
+        websocket_token_secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+      };
+    };
+    gitlab = {
+      address = "http+unix://${pathUrlQuote gitlabSocket}";
+      authentication_secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+    };
+    api = {
+      listen = {
+        authentication_secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+      };
+    };
+    private_api = {
+      listen = {
+        authentication_secret_file = "${cfg.statePath}/.gitlab_kas_secret";
+      };
+    };
+    redis = {
+      server = {
+        address = cfg.redisUrl;
+      };
+    };
+  };
+
   redisConfig.production.url = cfg.redisUrl;
 
   cableYml = yaml.generate "cable.yml" {
@@ -316,6 +352,8 @@ in
       packages.gitaly = mkPackageOption pkgs "gitaly" { };
 
       packages.pages = mkPackageOption pkgs "gitlab-pages" { };
+
+      packages.gitlab-kas = mkPackageOption pkgs "gitlab-kas" { };
 
       statePath = mkOption {
         type = types.str;
@@ -1082,6 +1120,16 @@ in
         };
       };
 
+      kas = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            Enable GitLab KAS (Kubernetes integration).
+          '';
+        };
+      };
+
       workhorse.config = mkOption {
         type = toml.type;
         default = { };
@@ -1836,6 +1884,30 @@ in
         User = cfg.user;
         Group = cfg.group;
         ExecStart = "${cfg.packages.gitlab.rubyEnv}/bin/bundle exec mail_room -c ${cfg.statePath}/config/mail_room.yml";
+        WorkingDirectory = gitlabEnv.HOME;
+        Slice = "system-gitlab.slice";
+      };
+    };
+
+    systemd.services.gitlab-kas = mkIf (cfg.kas.enabled) {
+      description = "GitLab KAS";
+      after = [
+        "network.target"
+        "redis-gitlab.service"
+        "gitlab-config.service"
+      ];
+      bindsTo = [ "gitlab-config.service" ];
+      wantedBy = [ "gitlab.target" ];
+      partOf = [ "gitlab.target" ];
+      environment = gitlabEnv;
+      serviceConfig = {
+        Type = "simple";
+        TimeoutSec = "infinity";
+        Restart = "on-failure";
+
+        User = cfg.user;
+        Group = cfg.group;
+        ExecStart = "${cfg.packages.gitlab-kas}/bin/kas --configuration-file ${gitlabKasConfig}";
         WorkingDirectory = gitlabEnv.HOME;
         Slice = "system-gitlab.slice";
       };
