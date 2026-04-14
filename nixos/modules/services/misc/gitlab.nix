@@ -1889,7 +1889,7 @@ in
       };
     };
 
-    systemd.services.gitlab-kas = mkIf (cfg.kas.enabled) {
+    systemd.services.gitlab-kas = mkIf (cfg.kas.enable) {
       description = "GitLab KAS";
       after = [
         "network.target"
