@@ -42,27 +42,20 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "rapidraw";
-  version = "1.5.2";
+  version = "1.5.5";
 
   src = fetchFromGitHub {
     owner = "CyberTimon";
     repo = "RapidRAW";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-GCmaPNgPn6xTdvRTkXlrSasULlxWFTwuBlbqmMD4O8s=";
-    fetchSubmodules = true;
-
-    # darwin/linux hash mismatch in rawler submodule
-    # Same fix as is used in dnglab packaging
-    postFetch = ''
-      rm -rf $out/src-tauri/rawler/rawler/data/testdata/cameras/Canon/{"EOS REBEL T7i","EOS Rebel T7i"}
-    '';
+    hash = "sha256-CnH8EuHzHxuXbnOry2gMU/tMqpE8++ztyNPk3HHdZqE=";
   };
 
-  cargoHash = "sha256-IIl4BSEMpyLiiZQGRlQaIPpXNQKGg6GrGQmnHDzDAdc=";
+  cargoHash = "sha256-c2MK1DyonfeZKfZAVWfwVh/In5SqKq7nnFrlz2686SM=";
 
   npmDeps = fetchNpmDeps {
     inherit (finalAttrs) src;
-    hash = "sha256-PLwefGi6p6rJLvLonHXszA74wqySyoE3xxRPDlrfgUQ=";
+    hash = "sha256-1A6b63FjNvkAbu62dRXfMjTL1y2wr2gEsZkLqYvTk0w=";
   };
 
   nativeBuildInputs = [
@@ -171,7 +164,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     homepage = "https://github.com/CyberTimon/RapidRAW";
     license = lib.licenses.agpl3Only;
     mainProgram = "rapidraw";
-    maintainers = with lib.maintainers; [ taciturnaxolotl ];
+    maintainers = with lib.maintainers; [
+      philipdb
+      taciturnaxolotl
+    ];
     platforms = lib.platforms.linux ++ lib.platforms.darwin;
   };
 })

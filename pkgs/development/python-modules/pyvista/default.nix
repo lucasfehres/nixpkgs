@@ -15,14 +15,14 @@
 
 buildPythonPackage rec {
   pname = "pyvista";
-  version = "0.47.2";
+  version = "0.48.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "pyvista";
     repo = "pyvista";
     tag = "v${version}";
-    hash = "sha256-59Crx2YeCLUcmiFeBGa9yrefRgamW58OqGIO933zkJc=";
+    hash = "sha256-mdqngUVcZFB15FdzkVv38X4gz46hyORuJda2k0Dw30w=";
   };
 
   build-system = [ setuptools ];

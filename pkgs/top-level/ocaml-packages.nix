@@ -70,6 +70,10 @@ let
 
         atd = callPackage ../development/ocaml-modules/atd { };
 
+        atd-jsonlike = callPackage ../development/ocaml-modules/atd/jsonlike.nix { };
+
+        atd-yamlx = callPackage ../development/ocaml-modules/atd/yamlx.nix { };
+
         atdgen = callPackage ../development/ocaml-modules/atdgen { };
 
         atdgen-codec-runtime = callPackage ../development/ocaml-modules/atdgen/codec-runtime.nix { };
@@ -1438,7 +1442,7 @@ let
 
         nottui-unix = callPackage ../development/ocaml-modules/lwd/nottui-unix.nix { };
 
-        notty = callPackage ../development/ocaml-modules/notty { };
+        notty-community = callPackage ../development/ocaml-modules/notty-community { };
 
         npy = callPackage ../development/ocaml-modules/npy {
           inherit (pkgs.python3Packages) numpy;
@@ -1477,8 +1481,6 @@ let
             { };
 
         ocaml-monadic = callPackage ../development/ocaml-modules/ocaml-monadic { };
-
-        ocaml_mysql = callPackage ../development/ocaml-modules/mysql { };
 
         ocaml_oasis = callPackage ../development/tools/ocaml/oasis { };
 
@@ -1818,6 +1820,8 @@ let
 
         ppx_lun = callPackage ../development/ocaml-modules/lun/ppx.nix { };
 
+        ppx_mikmatch = callPackage ../development/ocaml-modules/ppx_mikmatch { };
+
         ppx_monad = callPackage ../development/ocaml-modules/ppx_monad { };
 
         ppx_repr = callPackage ../development/ocaml-modules/repr/ppx.nix { };
@@ -2024,8 +2028,6 @@ let
         smtml = callPackage ../development/ocaml-modules/smtml {
           mdx = mdx.override { inherit logs; };
         };
-
-        sodium = callPackage ../development/ocaml-modules/sodium { };
 
         sosa = callPackage ../development/ocaml-modules/sosa { };
 
@@ -2285,6 +2287,8 @@ let
 
         yaml-sexp = callPackage ../development/ocaml-modules/yaml/yaml-sexp.nix { };
 
+        yamlx = callPackage ../development/ocaml-modules/yamlx { };
+
         yojson = callPackage ../development/ocaml-modules/yojson { };
 
         yojson_2 = yojson.overrideAttrs (_: {
@@ -2355,9 +2359,11 @@ let
         dune_2 = pkgs.dune_2; # Added 2025-12-08
         dune_3 = pkgs.dune_3; # Added 2025-12-08
         gd4o = throw "ocamlPackages.gd4o is not maintained, use ocamlPackages.gd instead";
+        notty = throw "2026-05-05: notty is no longer maintained, use notty-community instead";
         ocaml-freestanding = throw "ocamlPackages.ocaml-freestanding has been removed due to being broken for more than a year; see RFC 180"; # Added 2026-02-05
         ocaml-vdom = throw "2023-10-09: ocamlPackages.ocaml-vdom was renamed to ocamlPackages.vdom";
         ocaml_lwt = throw "ocamlPackages.ocaml_lwt has been renamed to ocamlPackages.lwt"; # Added 2025-12-05
+        ocaml_mysql = throw "ocamlPackages.ocaml_mysql is not maintained, use ocamlPackages.mariadb instead";
         torch = throw "ocamlPackages.torch has been removed due to being broken for more than a year; see RFC 180"; # Added 2026-02-05
       }
     )).overrideScope

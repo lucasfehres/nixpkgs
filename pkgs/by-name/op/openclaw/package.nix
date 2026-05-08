@@ -11,7 +11,7 @@
   versionCheckHook,
   rolldown,
   installShellFiles,
-  version ? "2026.4.11",
+  version ? "2026.5.6",
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "openclaw";
@@ -21,10 +21,10 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "openclaw";
     repo = "openclaw";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-KDRcjb6nuJ67X7ZImjBgyWyS4YXQlv8OOAkZdZa39Ds=";
+    hash = "sha256-svziVePavoMxEUQAaNkv+67tSUOywblefmeTWtmKo9Y=";
   };
 
-  pnpmDepsHash = "sha256-fVy4T/JPOX0Ts6/D8pb/2iVxYy/GXJQsdefg84pl4cc=";
+  pnpmDepsHash = "sha256-kz9vE1A/GTkw/HH2ts4hxTJzrdkYhiLaJQP0AeAS3Bo=";
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) pname version src;
@@ -58,27 +58,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     chmod -R u+w node_modules/rolldown node_modules/@rolldown/pluginutils \
       node_modules/.pnpm/node_modules/rolldown node_modules/.pnpm/node_modules/@rolldown/pluginutils
 
-    # In Nix sandbox, npm install has no network access.
-    # 1) Skip missing/mismatched deps in closure walk instead of aborting.
-    # 2) Never fall through to the npm-install path.
-    substituteInPlace scripts/stage-bundled-plugin-runtime-deps.mjs \
-      --replace-fail \
-        'if (installedVersion === null || !dependencyVersionSatisfied(spec, installedVersion)) {
-          return null;
-        }' \
-        'if (installedVersion === null || !dependencyVersionSatisfied(spec, installedVersion)) {
-          continue;
-        }' \
-      --replace-fail \
-        'stageInstalledRootRuntimeDeps({ fingerprint, packageJson, pluginDir, repoRoot })
-      ) {
-        return;
-      }' \
-        'stageInstalledRootRuntimeDeps({ fingerprint, packageJson, pluginDir, repoRoot })
-      ) {
-        return;
-      }
-      return; // nix: sandbox has no npm'
     pnpm build
     pnpm ui:build
 
@@ -93,7 +72,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
 
     cp --reflink=auto -r package.json dist node_modules $libdir/
-    cp --reflink=auto -r assets docs skills patches extensions qa $libdir/
+    cp --reflink=auto -r docs skills patches extensions qa $libdir/
 
     rm -f $libdir/node_modules/.pnpm/node_modules/clawdbot \
       $libdir/node_modules/.pnpm/node_modules/moltbot \
@@ -121,7 +100,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       installShellCompletion --cmd openclaw \
         --bash <(${emulator} $out/bin/openclaw completion --shell bash) \
         --fish <(${emulator} $out/bin/openclaw completion --shell fish) \
-        --zsh <(${emulator} $out/bin/openclaw completion --shell zsh)
+        --zsh  <(${emulator} $out/bin/openclaw completion --shell zsh)
     ''
   );
 

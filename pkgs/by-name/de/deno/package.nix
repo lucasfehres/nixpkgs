@@ -9,9 +9,7 @@
   protobuf,
   installShellFiles,
   makeBinaryWrapper,
-  librusty_v8 ? callPackage ./librusty_v8.nix {
-    inherit (callPackage ./fetchers.nix { }) fetchLibrustyV8;
-  },
+  librusty_v8 ? callPackage ./rusty-v8 { },
   libffi,
   sqlite,
   lld,
@@ -31,30 +29,22 @@ let
 in
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "deno";
-  version = "2.7.9";
+  version = "2.7.14";
 
   src = fetchFromGitHub {
     owner = "denoland";
     repo = "deno";
     tag = "v${finalAttrs.version}";
     fetchSubmodules = true; # required for tests
-    hash = "sha256-asRSIDpVN8sZgck5cocqfjcFNnP3CekR0lwBi0jr6GM=";
+    hash = "sha256-tkZc89JOhXCdMVSAOQYGR6HDe7KmCI5/haLH1RP2p7I=";
   };
 
-  cargoHash = "sha256-lL9ZeMUi5cwrqikg+GiR5hQNgWPKlpAN7yQIXSsr93k=";
+  cargoHash = "sha256-bFQLsAF4hFBRw04VaL+sxvxIZ9p7nXOLSr2BIZKcwiI=";
 
   patches = [
     ./patches/0002-tests-replace-hardcoded-paths.patch
     ./patches/0003-tests-linux-no-chown.patch
     ./patches/0004-tests-darwin-fixes.patch
-  ]
-  ++ lib.optionals (stdenv.hostPlatform.isAarch64 && stdenv.hostPlatform.isLinux) [
-    # Fix c_char mismatch on aarch64-linux
-    # PR at https://github.com/denoland/deno/pull/33179
-    (fetchpatch {
-      url = "https://github.com/denoland/deno/commit/fd331552de39501d47c43dc4b0c637b969402ab1.patch";
-      hash = "sha256-AIqLbTnBO2VUFiTumEZFORqSyfzB6chdvJQq8HeAM30=";
-    })
   ];
   postPatch = ''
     # Use patched nixpkgs libffi in order to fix https://github.com/libffi/libffi/pull/857
@@ -252,13 +242,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
   '';
 
   passthru = {
-    updateScript = ./update/update.ts;
+    updateScript = ./update.sh;
     tests = callPackage ./tests { };
     inherit librusty_v8;
   };
 
   meta = {
-    homepage = "https://deno.land/";
+    homepage = "https://deno.com/";
     changelog = "https://github.com/denoland/deno/releases/tag/v${finalAttrs.version}";
     description = "Secure runtime for JavaScript and TypeScript";
     longDescription = ''
@@ -275,6 +265,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     maintainers = with lib.maintainers; [
       jk
       ofalvai
+      mynacol
     ];
     platforms = [
       "x86_64-linux"

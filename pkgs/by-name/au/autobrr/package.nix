@@ -16,12 +16,12 @@
 
 let
   pname = "autobrr";
-  version = "1.75.1";
+  version = "1.77.1";
   src = fetchFromGitHub {
     owner = "autobrr";
     repo = "autobrr";
     tag = "v${version}";
-    hash = "sha256-y1whIPx4s399WmO2xzjLFXPKhINE9b3+jHJcmsP+3ZA=";
+    hash = "sha256-XNTQmW8JUxe8bffe1eGvxoRQ3rKdoH0QQKDn/wY6L3o=";
   };
 
   autobrr-web = stdenvNoCC.mkDerivation {
@@ -46,7 +46,7 @@ let
         ;
       pnpm = pnpm_10;
       fetcherVersion = 3;
-      hash = "sha256-euDGtNERNq3IgxggiHoLmcq2+e2SslXLSfY8TTFnqoE=";
+      hash = "sha256-StLGK3Oezv+M5tuFd1rZyLpG0g1xFxWPJ5lm39Sy0FQ=";
     };
 
     postBuild = ''
@@ -60,16 +60,15 @@ let
 in
 buildGoModule (finalAttrs: {
   inherit
-    autobrr-web
     pname
     version
     src
     ;
 
-  vendorHash = "sha256-kxly/+7wnPbxs1LKzoSFRYcPBWqZg4tgzV3uYJji+yA=";
+  vendorHash = "sha256-POqFXcLtc18EzEQ2SRb2+D+3E8KexaAOelgOSvCwoWI=";
 
   preBuild = ''
-    cp -r ${autobrr-web}/* web/dist
+    cp -r ${finalAttrs.passthru.autobrr-web}/* web/dist
   '';
 
   ldflags = [
@@ -88,6 +87,7 @@ buildGoModule (finalAttrs: {
   versionCheckProgramArg = "version";
 
   passthru = {
+    inherit autobrr-web;
     updateScript = nix-update-script {
       extraArgs = [
         "--subpackage"

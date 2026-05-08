@@ -3,8 +3,8 @@
   stdenv,
   fetchFromGitHub,
   cmake,
+  pkg-config,
   cmark,
-  extra-cmake-modules,
   gamemode,
   jdk17,
   kdePackages,
@@ -28,13 +28,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "prismlauncher-unwrapped";
-  version = "11.0.1";
+  version = "11.0.2";
 
   src = fetchFromGitHub {
     owner = "PrismLauncher";
     repo = "PrismLauncher";
     tag = finalAttrs.version;
-    hash = "sha256-5OMDvGEVbF317gzq8w0LasecrEga1gkmSQ6FwwL7AOc=";
+    hash = "sha256-GvAfrZxQSlBnCJ59nvK87jDTVo60D8n25K42SokE1q8=";
   };
 
   postUnpack = ''
@@ -44,8 +44,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     cmake
+    pkg-config
     ninja
-    extra-cmake-modules
+    kdePackages.extra-cmake-modules
     jdk17
     stripJavaArchivesHook
   ];

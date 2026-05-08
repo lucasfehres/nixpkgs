@@ -217,6 +217,13 @@ in
     (mkRemovedOptionModule
       [
         "services"
+        "globalprotect"
+      ]
+      "The corresponding package was removed from nixpkgs, as it depended on qt5 webengine. A replacements based on tauri exist upstream, but requires non-trivial maintainance in nixpkgs to update."
+    )
+    (mkRemovedOptionModule
+      [
+        "services"
         "grafana-agent"
       ]
       "The grafana-agent module has been removed. Consider migrating to `grafana-alloy` (`services.alloy.enable`). See <https://grafana.com/docs/alloy/latest/set-up/migrate/>"
@@ -499,6 +506,9 @@ in
     '')
     (mkRemovedOptionModule [ "services" "pyload" ] ''
       services.pyload has been removed since the pyload-ng package had vulnerabilities and was unmaintained in nixpkgs.
+    '')
+    (mkRemovedOptionModule [ "services" "xtreemfs" ] ''
+      services.xtreemfs has been removed as it was broken and unmaintained upstream
     '')
     # Do NOT add any option renames here, see top of the file
   ];

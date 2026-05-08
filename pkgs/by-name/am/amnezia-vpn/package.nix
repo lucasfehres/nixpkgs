@@ -68,13 +68,15 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "amnezia-vpn";
-  version = "4.8.14.1";
+  version = "4.8.15.4";
+
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "amnezia-vpn";
     repo = "amnezia-client";
     tag = finalAttrs.version;
-    hash = "sha256-NZku10mU6Psl03lT4ITYhjWDkKH70RAw+axUuKe22j0=";
+    hash = "sha256-ZUWesEpXb+L7NzL/jkWpS3b4DGq4733T5zc+VXSw9Ic=";
     fetchSubmodules = true;
   };
 
@@ -147,6 +149,10 @@ stdenv.mkDerivation (finalAttrs: {
 
     runHook postInstall
   '';
+
+  passthru = {
+    updateScript = nix-update-script { };
+  };
 
   meta = {
     description = "Amnezia VPN Client";
